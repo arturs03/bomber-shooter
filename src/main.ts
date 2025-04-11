@@ -1,35 +1,23 @@
-import { Application, Assets, Sprite } from "pixi.js";
+import { Application } from "pixi.js";
+import { Cannon } from "./entities/Cannon";
+import { PlayerController } from "./managers/PlayerController";
 
 (async () => {
-  // Create a new application
   const app = new Application();
-
-  // Initialize the application
   await app.init({ background: "#1099bb", resizeTo: window });
-
-  // Append the application canvas to the document body
   document.getElementById("game-container")!.appendChild(app.canvas);
 
-  // Load the bunny texture
-  const texture = await Assets.load("/assets/bunny.png");
+  const cannon = new Cannon();
+  cannon.view.x = app.screen.width / 2;
+  cannon.view.y = app.screen.height - cannon.view.height;
+  console.log(cannon.view.height);
+  app.stage.addChild(cannon.view);
 
-  // Create a bunny Sprite
-  const bunny = new Sprite(texture);
-
-  // Center the sprite's anchor point
-  bunny.anchor.set(0.5);
-
-  // Move the sprite to the center of the screen
-  bunny.position.set(app.screen.width / 2, app.screen.height / 2);
-
-  // Add the bunny to the stage
-  app.stage.addChild(bunny);
+  const playerController = new PlayerController();
 
   // Listen for animate update
-  app.ticker.add((time) => {
-    // Just for fun, let's rotate mr rabbit a little.
-    // * Delta is 1 if running at 100% performance *
-    // * Creates frame-independent transformation *
-    bunny.rotation += 0.1 * time.deltaTime;
+  app.ticker.add((ticker) => {
+    cannon.updateState(playerController);
+    cannon.update(ticker.deltaTime);
   });
 })();
