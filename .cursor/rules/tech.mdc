@@ -1,0 +1,12 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Tech
+
+- pixi.js
+- canvas
+- react
+- vite
+- pnpm
