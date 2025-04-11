@@ -44,6 +44,6 @@ export class PlayerController {
 
     const key = KEY_MAP[event.code] as keyof KeyMap;
     this.keys[key].pressed = false;
-    this.keys[key].timestamp = Date.now();
+    this.keys[key].timestamp = 0;
   };
 }

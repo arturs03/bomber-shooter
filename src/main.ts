@@ -10,7 +10,6 @@ import { PlayerController } from "./managers/PlayerController";
   const cannon = new Cannon();
   cannon.view.x = app.screen.width / 2;
   cannon.view.y = app.screen.height - cannon.view.height;
-  console.log(cannon.view.height);
   app.stage.addChild(cannon.view);
 
   const playerController = new PlayerController();
@@ -18,6 +17,6 @@ import { PlayerController } from "./managers/PlayerController";
   // Listen for animate update
   app.ticker.add((ticker) => {
     cannon.updateState(playerController);
-    cannon.update(ticker.deltaTime);
+    cannon.update(ticker.deltaTime, app.screen.width, app.stage);
   });
 })();
