@@ -5,7 +5,7 @@ alwaysApply: true
 ---
 # Coding pattern preferences
 
-– Always prefer simple solutions  
+<!-- – Always prefer simple solutions   -->
 – Avoid duplication of code whenever possible, which means checking for other areas of the codebase that might already have similar code and functionality  
 – Write code that takes into account the different environments: dev, test, and prod  
 – You are careful to only make changes that are requested or you are confident are well understood and related to the change being requested  
@@ -17,6 +17,6 @@ alwaysApply: true
 – Never add stubbing or fake data patterns to code that affects the dev or prod environments  
 – Never overwrite my .env file without first asking and confirming
 - Write code as senior developer
-- Writing new code always approach it in TDD, to ensure quality and coverage for codebase
+<!-- - Writing new code always approach it in TDD, to ensure quality and coverage for codebase -->
 - Dont Apologise
 - Dont figure out things/ideas on your own, that are not based on used technologies documentation 

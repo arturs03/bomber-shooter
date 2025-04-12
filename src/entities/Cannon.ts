@@ -77,15 +77,13 @@ export class Cannon {
   }
 
   private _shoot() {
-    const now = Date.now();
     const projectileX = this.view.x + this.view.width / 2;
     const projectileY = this.view.y;
     const projectile = new Projectile(projectileX, projectileY);
     this.projectiles.set(projectile.view.uid, projectile);
-    console.log(app.stage.children);
-
+    
     app.stage.addChild(projectile.view);
-    this.lastShotTime = now;
+    this.lastShotTime = Date.now();
   }
 
   private _drawProjectiles(deltaTime: number) {
@@ -93,6 +91,7 @@ export class Cannon {
       if (projectile.isOffScreen()) {
         projectile.view.destroy();
         this.projectiles.delete(projectile.view.uid);
+        
         continue;
       }
 

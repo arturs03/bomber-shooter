@@ -23,10 +23,11 @@ async function init() {
   const ball = new Ball({ width: app.screen.width, height: app.screen.height });
   app.stage.addChild(ball.view);
 
-  // Listen for animate update
+  // Main game loop
   app.ticker.add((ticker) => {
     cannon.updateState(playerController);
     cannon.update(ticker.deltaTime);
+
     ball.update(ticker.deltaTime);
   });
 }
