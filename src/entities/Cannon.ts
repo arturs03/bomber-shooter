@@ -1,8 +1,8 @@
 import { Container, Graphics } from "pixi.js";
 import { PlayerController } from "../managers/PlayerController";
 import { Projectile } from "./Projectile";
-
-const SHOOT_COOLDOWN = 2000;
+import { app } from "../main";
+const SHOOT_COOLDOWN = 200;
 
 export class Cannon {
   view: Container;
@@ -19,12 +19,12 @@ export class Cannon {
   };
   speed = 5;
   canShoot = true;
-  projectiles: Projectile[] = [];
+  projectiles: Map<number, Projectile> = new Map();
   lastShotTime = 0;
+
   constructor() {
     this.view = new Container();
     this.view.addChild(this.drawCannon());
-    // draw rectangle of view size
   }
 
   drawCannon() {
@@ -51,32 +51,52 @@ export class Cannon {
     this.state.shoot = controller.keys.space.pressed;
   }
 
-  update(deltaTime: number, screenWidth: number, stage: Container) {
+  update(deltaTime: number) {
     if (this.state.idle) {
       return;
     }
 
     if (this.state.move) {
-      let intendedX = this.view.x;
-      intendedX += deltaTime * 10 * this.state.direction;
-
-      const minX = 0;
-      const maxX = screenWidth - this.view.width;
-      this.view.x = Math.max(minX, Math.min(intendedX, maxX));
+      this._drawCannonMovement(deltaTime);
     }
 
+    if (this.state.shoot && Date.now() > this.lastShotTime + SHOOT_COOLDOWN) {
+      this._shoot();
+    }
+
+    this._drawProjectiles(deltaTime);
+  }
+
+  private _drawCannonMovement(deltaTime: number) {
+    let intendedX = this.view.x;
+    intendedX += deltaTime * 10 * this.state.direction;
+
+    const minX = 0;
+    const maxX = app.screen.width - this.view.width;
+    this.view.x = Math.max(minX, Math.min(intendedX, maxX));
+  }
+
+  private _shoot() {
     const now = Date.now();
-    if (this.state.shoot && now > this.lastShotTime + SHOOT_COOLDOWN) {
-      const projectileX = this.view.x + this.view.width / 2;
-      const projectileY = this.view.y; // Spawn at the top of the cannon
-      const projectile = new Projectile(projectileX, projectileY);
-      this.projectiles.push(projectile);
-      stage.addChild(projectile.view);
-      this.lastShotTime = now; // Update last shot time
-    }
+    const projectileX = this.view.x + this.view.width / 2;
+    const projectileY = this.view.y;
+    const projectile = new Projectile(projectileX, projectileY);
+    this.projectiles.set(projectile.view.uid, projectile);
+    console.log(app.stage.children);
 
-    this.projectiles.forEach((projectile) => {
+    app.stage.addChild(projectile.view);
+    this.lastShotTime = now;
+  }
+
+  private _drawProjectiles(deltaTime: number) {
+    for (const projectile of this.projectiles.values()) {
+      if (projectile.isOffScreen()) {
+        projectile.view.destroy();
+        this.projectiles.delete(projectile.view.uid);
+        continue;
+      }
+
       projectile.update(deltaTime);
-    });
+    }
   }
 }

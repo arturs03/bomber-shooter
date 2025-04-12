@@ -16,12 +16,10 @@ export class Projectile {
   }
 
   update(deltaTime: number) {
-    // this.view.x += this.velocity.x * this.speed * deltaTime;
     this.view.y += this.velocity.y * this.speed * deltaTime;
   }
 
-  isOffScreen(screenHeight: number): boolean {
-    // Assumes y=0 is the top edge. Adjust if your coordinate system differs.
-    return screenHeight < this.view.y - this.view.height;
+  isOffScreen(): boolean {
+    return 0 >= this.view.y - this.view.height;
   }
 }
