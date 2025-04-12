@@ -4,6 +4,7 @@ import { DEBUG_ENABLED } from "./utils/constants";
 import { EntityManager } from "./managers/EntityManager";
 import { createBallEntity } from "./entities/Ball";
 import { createCannonEntity } from "./entities/Cannon";
+import { CollisionManager } from "./managers/CollisionManager";
 
 export const app = new Application();
 
@@ -15,11 +16,14 @@ async function init() {
   }
 
   const entityManager = new EntityManager(app.stage);
-  entityManager.addEntity(createCannonEntity());
+  entityManager.addEntity(createCannonEntity(entityManager));
   entityManager.addEntity(createBallEntity());
+
+  const collisionManager = new CollisionManager(entityManager);
 
   app.ticker.add((ticker) => {
     entityManager.update(ticker.deltaTime);
+    collisionManager.checkCollisions();
   });
 }
 

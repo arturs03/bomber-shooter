@@ -1,6 +1,6 @@
 import { Graphics } from "pixi.js";
 
-export class Projectile {
+export class ProjectileGameObject {
   view: Graphics;
   velocity: { x: number; y: number };
   speed: number = 3.5;
@@ -17,6 +17,10 @@ export class Projectile {
 
   update(deltaTime: number) {
     this.view.y += this.velocity.y * this.speed * deltaTime;
+  }
+
+  destroy() {
+    this.view.destroy();
   }
 
   isOffScreen(): boolean {

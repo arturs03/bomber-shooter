@@ -1,8 +1,10 @@
 import { Container, Graphics } from "pixi.js";
 import { PlayerController } from "../managers/PlayerController";
-import { Projectile } from "../game-objects/Projectile";
 import { app } from "../main";
-const SHOOT_COOLDOWN = 200;
+import { createProjectileEntity } from "../entities/Projectile";
+import { EntityManager } from "../managers/EntityManager";
+
+const SHOOT_COOLDOWN = 500;
 
 export class CannonGameObject {
   view: Container;
@@ -18,16 +20,16 @@ export class CannonGameObject {
     direction: 1,
   };
   speed = 5;
-  canShoot = true;
-  projectiles: Map<number, Projectile> = new Map();
   lastShotTime = 0;
   controller: PlayerController;
+  entityManager: EntityManager;
 
-  constructor() {
+  constructor(entityManager: EntityManager) {
     this.view = new Container();
     this.view.addChild(this.drawCannon());
 
     this.controller = new PlayerController();
+    this.entityManager = entityManager;
   }
 
   drawCannon() {
@@ -68,8 +70,6 @@ export class CannonGameObject {
     if (this.state.shoot && Date.now() > this.lastShotTime + SHOOT_COOLDOWN) {
       this._shoot();
     }
-
-    this._drawProjectiles(deltaTime);
   }
 
   destroy() {
@@ -88,23 +88,9 @@ export class CannonGameObject {
   private _shoot() {
     const projectileX = this.view.x + this.view.width / 2;
     const projectileY = this.view.y;
-    const projectile = new Projectile(projectileX, projectileY);
-    this.projectiles.set(projectile.view.uid, projectile);
+    const projectile = createProjectileEntity(projectileX, projectileY);
+    this.entityManager.addEntity(projectile);
 
-    app.stage.addChild(projectile.view);
     this.lastShotTime = Date.now();
-  }
-
-  private _drawProjectiles(deltaTime: number) {
-    for (const projectile of this.projectiles.values()) {
-      if (projectile.isOffScreen()) {
-        projectile.view.destroy();
-        this.projectiles.delete(projectile.view.uid);
-
-        continue;
-      }
-
-      projectile.update(deltaTime);
-    }
   }
 }
