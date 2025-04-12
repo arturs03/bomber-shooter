@@ -1,17 +1,28 @@
-import { Graphics } from "pixi.js";
+import { Graphics, Container, Text } from "pixi.js";
 
 type Bounds = { width: number; height: number };
 
 export class Ball {
-  view: Graphics;
+  view: Container;
   velocity: { x: number; y: number };
   speed: number = 5;
-  health = 1;
+  health = 2;
   bounds: Bounds;
 
   constructor(bounds: Bounds) {
-    this.view = new Graphics();
-    this.view.circle(0, 0, 20).fill({ color: "yellow" });
+    this.view = new Container();
+    const graphics = new Graphics();
+    graphics.circle(0, 0, 20).fill({ color: "yellow" });
+
+    const text = new Text({
+      text: this.health.toString(),
+      style: {
+        fontSize: 20,
+        fill: 0x1010ff,
+      },
+    })
+    text.anchor.set(0.5, 0.5);
+    this.view.addChild(graphics, text);
 
     this.velocity = { x: this.speed, y: this.speed };
 

@@ -3,7 +3,7 @@ import { Graphics } from "pixi.js";
 export class Projectile {
   view: Graphics;
   velocity: { x: number; y: number };
-  speed: number = 5;
+  speed: number = 3.5;
 
   constructor(startX: number, startY: number) {
     this.view = new Graphics();
