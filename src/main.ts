@@ -3,6 +3,7 @@ import { Cannon } from "./entities/Cannon";
 import { PlayerController } from "./managers/PlayerController";
 import { Stats } from "pixi-stats";
 import { DEBUG_ENABLED } from "./utils/constants";
+import { Ball } from "./entities/Ball";
 export const app = new Application();
 
 async function init() {
@@ -19,10 +20,14 @@ async function init() {
 
   const playerController = new PlayerController();
 
+  const ball = new Ball({ width: app.screen.width, height: app.screen.height });
+  app.stage.addChild(ball.view);
+
   // Listen for animate update
   app.ticker.add((ticker) => {
     cannon.updateState(playerController);
     cannon.update(ticker.deltaTime);
+    ball.update(ticker.deltaTime);
   });
 }
 
