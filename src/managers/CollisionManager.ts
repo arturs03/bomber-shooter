@@ -21,6 +21,8 @@ export class CollisionManager {
     const projectileEntities =
       this.entityManager.getEntitiesByType(ENTITY_PROJECTILE) ?? null;
 
+    this.checkProjectileOffScreen(projectileEntities);
+
     this.checkCollisionBetweenEntities(
       cannonEntities,
       ballEntities,
@@ -75,5 +77,19 @@ export class CollisionManager {
     console.log("projectileEntity", projectileEntity);
     this.entityManager.removeEntity(projectileEntity);
     this.entityManager.removeEntity(ballEntity);
+  }
+
+  checkProjectileOffScreen(
+    projectileEntities: Map<number, IGameEntity> | null,
+  ) {
+    if (!projectileEntities?.size) {
+      return;
+    }
+
+    for (const projectileEntity of projectileEntities.values()) {
+      if (projectileEntity.view.y - projectileEntity.view.height <= 0) {
+        this.entityManager.removeEntity(projectileEntity);
+      }
+    }
   }
 }

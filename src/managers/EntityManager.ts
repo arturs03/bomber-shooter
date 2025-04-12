@@ -1,5 +1,6 @@
 import { Container } from "pixi.js";
 import { IGameEntity } from "../utils/types";
+import { DEBUG_ENABLED } from "../utils/constants";
 
 export class EntityManager {
   // Entities by type
@@ -13,13 +14,23 @@ export class EntityManager {
   addEntity(newEntity: IGameEntity) {
     const entitiesGroup = this._entities.get(newEntity.type);
     if (entitiesGroup && entitiesGroup.has(newEntity.uid)) {
-      console.warn(`Entity with uid ${newEntity.uid} already exists`);
+      if (DEBUG_ENABLED) {
+        console.warn(`Entity with uid ${newEntity.uid} already exists`);
+      }
+
       return;
     }
 
-    this._entities.set(newEntity.type, new Map().set(newEntity.uid, newEntity));
+    if (!entitiesGroup?.size) {
+      this._entities.set(newEntity.type, new Map());
+    }
+
+    this._entities.get(newEntity.type)?.set(newEntity.uid, newEntity);
     this._stage.addChild(newEntity.view);
-    console.log(`Added entity: ${newEntity.type} (UID: ${newEntity.uid})`);
+
+    if (DEBUG_ENABLED) {
+      console.log(`Added entity: ${newEntity.type} (UID: ${newEntity.uid})`);
+    }
   }
 
   removeEntity(entity: IGameEntity) {
@@ -27,11 +38,23 @@ export class EntityManager {
     if (entitiesGroup && entitiesGroup.has(entity.uid)) {
       entitiesGroup.delete(entity.uid);
       entity.view.destroy();
-      console.log(`Removed entity: ${entity.type} (UID: ${entity.uid})`);
+
+      if (DEBUG_ENABLED) {
+        console.log(
+          `%cRemoved entity: ${entity.type} (UID: ${entity.uid})`,
+          "color: red",
+        );
+      }
+
       return;
     }
 
-    console.log(`Not found entity: ${entity.type} (UID: ${entity.uid})`);
+    if (DEBUG_ENABLED) {
+      console.log(
+        `%cNot found entity: ${entity.type} (UID: ${entity.uid})`,
+        "color: red",
+      );
+    }
   }
 
   update(deltaTime: number) {
