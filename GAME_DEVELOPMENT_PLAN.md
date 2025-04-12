@@ -1,16 +1,19 @@
 # Phase 1: Pixi.js Fundamentals (1-2 weeks)
+
 Learn Pixi.js basics: renderer, stage, sprites, containers
 Understand the game loop and animation with requestAnimationFrame
 Master event handling for keyboard input
 Study asset loading and resource management
 
 # Phase 2: Game Architecture (1 week)
+
 Design game structure with proper separation of concerns
 Set up collision detection system
 Implement basic physics for movement and bouncing
 Create entity component system for game objects
 
 # Phase 3: Core Game Mechanics (2 weeks)
+
 Build player cannon with x-axis movement
 Implement firing mechanics with 500ms cooldown
 Create enemy spawning system with 1-minute interval
@@ -18,12 +21,14 @@ Develop HP system for both player (3 lives) and enemies (5 HP)
 Implement collision detection between bullets/enemies and player/enemies
 
 # Phase 4: Polish and Refinement (1 week)
+
 Add visual feedback (explosions, hit effects)
 Implement score system
 Create game states (start, playing, game over)
 Optimize performance
 
 # Phase 5: Testing and Deployment (1 week)
+
 Test game across different devices
 Fix bugs and edge cases
 Deploy game to web
@@ -61,6 +66,7 @@ src/
 Arhitecture for simple things that I should use
 
 # UI
+
 ```
 src/
 ├── ui/
@@ -69,7 +75,9 @@ src/
 │   ├── GameOverScreen.ts  - End game screen
 │   └── Button.ts          - Reusable UI elements
 ```
-# Services Responsibility 
+
+# Services Responsibility
+
 Yes, services contain game logic, but organized by function:
 GameStateService - Core game rules, win/lose conditions
 EntityService - Manages player cannon, enemies, bullets
@@ -78,6 +86,7 @@ RenderService - Drawing entities to screen
 TimerService - Enemy spawning intervals, weapon cooldowns
 
 # Levels
+
 ```
 src/
 ├── levels/
@@ -89,6 +98,7 @@ src/
 ```
 
 # Cannon Shooter Implementation
+
 ```
 // EntityService.ts
 // Define a common interface

@@ -1,9 +1,10 @@
 import { Application } from "pixi.js";
-import { Cannon } from "./entities/Cannon";
-import { PlayerController } from "./managers/PlayerController";
 import { Stats } from "pixi-stats";
 import { DEBUG_ENABLED } from "./utils/constants";
-import { Ball } from "./entities/Ball";
+import { EntityManager } from "./managers/EntityManager";
+import { createBallEntity } from "./entities/Ball";
+import { createCannonEntity } from "./entities/Cannon";
+
 export const app = new Application();
 
 async function init() {
@@ -13,22 +14,12 @@ async function init() {
     new Stats(app.renderer);
   }
 
-  const cannon = new Cannon();
-  cannon.view.x = app.screen.width / 2;
-  cannon.view.y = app.screen.height - cannon.view.height;
-  app.stage.addChild(cannon.view);
+  const entityManager = new EntityManager(app.stage);
+  entityManager.addEntity(createCannonEntity());
+  entityManager.addEntity(createBallEntity());
 
-  const playerController = new PlayerController();
-
-  const ball = new Ball({ width: app.screen.width, height: app.screen.height });
-  app.stage.addChild(ball.view);
-
-  // Main game loop
   app.ticker.add((ticker) => {
-    cannon.updateState(playerController);
-    cannon.update(ticker.deltaTime);
-
-    ball.update(ticker.deltaTime);
+    entityManager.update(ticker.deltaTime);
   });
 }
 
