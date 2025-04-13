@@ -2,9 +2,9 @@ import { Application } from "pixi.js";
 import { Stats } from "pixi-stats";
 import { DEBUG_ENABLED } from "./utils/constants";
 import { EntityManager } from "./managers/EntityManager";
-import { createBallEntity } from "./entities/Ball";
-import { createCannonEntity } from "./entities/Cannon";
 import { CollisionManager } from "./managers/CollisionManager";
+import { Cannon } from "./entities/Cannon";
+import { Ball } from "./entities/Ball";
 
 export const app = new Application();
 
@@ -16,8 +16,15 @@ async function init() {
   }
 
   const entityManager = new EntityManager(app.stage);
-  entityManager.addEntity(createCannonEntity(entityManager));
-  entityManager.addEntity(createBallEntity());
+
+  const cannon = new Cannon(entityManager);
+  cannon.view.x = app.screen.width / 2;
+  cannon.view.y = app.screen.height - cannon.view.height;
+  entityManager.addEntity(cannon);
+
+  entityManager.addEntity(
+    new Ball({ width: app.screen.width, height: app.screen.height }),
+  );
 
   const collisionManager = new CollisionManager(entityManager);
 

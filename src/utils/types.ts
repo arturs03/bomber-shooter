@@ -5,5 +5,4 @@ export interface IGameEntity {
   update(deltaTime: number): void;
   destroy(): void;
   type: string;
-  uid: number;
 }

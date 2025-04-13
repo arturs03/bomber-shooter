@@ -74,8 +74,9 @@ export class CollisionManager {
     projectileEntity: IGameEntity,
     ballEntity: IGameEntity,
   ) {
-    console.log("projectileEntity", projectileEntity);
     this.entityManager.removeEntity(projectileEntity);
+
+    console.log(ballEntity);
     this.entityManager.removeEntity(ballEntity);
   }
 

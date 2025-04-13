@@ -13,9 +13,9 @@ export class EntityManager {
 
   addEntity(newEntity: IGameEntity) {
     const entitiesGroup = this._entities.get(newEntity.type);
-    if (entitiesGroup && entitiesGroup.has(newEntity.uid)) {
+    if (entitiesGroup && entitiesGroup.has(newEntity.view.uid)) {
       if (DEBUG_ENABLED) {
-        console.warn(`Entity with uid ${newEntity.uid} already exists`);
+        console.warn(`Entity with uid ${newEntity.view.uid} already exists`);
       }
 
       return;
@@ -25,23 +25,25 @@ export class EntityManager {
       this._entities.set(newEntity.type, new Map());
     }
 
-    this._entities.get(newEntity.type)?.set(newEntity.uid, newEntity);
+    this._entities.get(newEntity.type)?.set(newEntity.view.uid, newEntity);
     this._stage.addChild(newEntity.view);
 
     if (DEBUG_ENABLED) {
-      console.log(`Added entity: ${newEntity.type} (UID: ${newEntity.uid})`);
+      console.log(
+        `Added entity: ${newEntity.type} (UID: ${newEntity.view.uid})`,
+      );
     }
   }
 
   removeEntity(entity: IGameEntity) {
     const entitiesGroup = this._entities.get(entity.type);
-    if (entitiesGroup && entitiesGroup.has(entity.uid)) {
-      entitiesGroup.delete(entity.uid);
+    if (entitiesGroup && entitiesGroup.has(entity.view.uid)) {
+      entitiesGroup.delete(entity.view.uid);
       entity.view.destroy();
 
       if (DEBUG_ENABLED) {
         console.log(
-          `%cRemoved entity: ${entity.type} (UID: ${entity.uid})`,
+          `%cRemoved entity: ${entity.type} (UID: ${entity.view.uid})`,
           "color: red",
         );
       }
@@ -51,7 +53,7 @@ export class EntityManager {
 
     if (DEBUG_ENABLED) {
       console.log(
-        `%cNot found entity: ${entity.type} (UID: ${entity.uid})`,
+        `%cNot found entity: ${entity.type} (UID: ${entity.view.uid})`,
         "color: red",
       );
     }
