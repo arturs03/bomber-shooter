@@ -23,7 +23,11 @@ async function init() {
   entityManager.addEntity(cannon);
 
   entityManager.addEntity(
-    new Ball({ width: app.screen.width, height: app.screen.height }),
+    new Ball({
+      position: { x: app.screen.width / 2, y: app.screen.height / 2 },
+      health: 4,
+      velocity: { x: 5, y: 5 },
+    }),
   );
 
   const collisionManager = new CollisionManager(entityManager);

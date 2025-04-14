@@ -1,21 +1,23 @@
 import { Graphics, Container, Text } from "pixi.js";
 import { IGameEntity } from "../utils/types";
 import { ENTITY_BALL } from "../utils/constants";
-
-type Bounds = { width: number; height: number };
+import { IBallParams } from "./types";
+import { app } from "../main";
 
 export class Ball implements IGameEntity {
   view: Container;
   velocity: { x: number; y: number };
   speed: number = 5;
-  health = 2;
-  bounds: Bounds;
+  health: number;
   type = ENTITY_BALL;
 
-  constructor(bounds: Bounds) {
+  constructor(params: IBallParams) {
     this.view = new Container();
+
     const graphics = new Graphics();
     graphics.circle(0, 0, 20).fill({ color: "yellow" });
+
+    this.health = params.health;
 
     const text = new Text({
       text: this.health.toString(),
@@ -27,11 +29,10 @@ export class Ball implements IGameEntity {
     text.anchor.set(0.5, 0.5);
     this.view.addChild(graphics, text);
 
-    this.velocity = { x: this.speed, y: this.speed };
+    this.velocity = params.velocity;
 
-    this.view.x = bounds.width / 2;
-    this.view.y = bounds.height / 2;
-    this.bounds = bounds;
+    this.view.x = params.position.x;
+    this.view.y = params.position.y;
   }
 
   update(deltaTime: number) {
@@ -47,14 +48,14 @@ export class Ball implements IGameEntity {
   private _bounce() {
     if (
       this.view.x - this.view.width / 2 < 0 ||
-      this.view.x + this.view.width / 2 > this.bounds.width
+      this.view.x + this.view.width / 2 > app.screen.width
     ) {
       this.velocity.x = -this.velocity.x;
     }
 
     if (
       this.view.y - this.view.height / 2 < 0 ||
-      this.view.y + this.view.height / 2 > this.bounds.height
+      this.view.y + this.view.height / 2 > app.screen.height
     ) {
       this.velocity.y = -this.velocity.y;
     }

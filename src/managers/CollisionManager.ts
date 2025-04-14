@@ -1,3 +1,4 @@
+import { Ball } from "../entities/Ball";
 import {
   ENTITY_BALL,
   ENTITY_CANNON,
@@ -26,27 +27,35 @@ export class CollisionManager {
     this.checkCollisionBetweenEntities(
       cannonEntities,
       ballEntities,
-      this.resolveCollisionCannonBall.bind(this),
+      this.resolveCollisionCannonBall.bind(this)
     );
 
     this.checkCollisionBetweenEntities(
       ballEntities,
       projectileEntities,
-      this.resolveCollisionProjectileBall.bind(this),
+      this.resolveCollisionProjectileBall.bind(this)
     );
   }
 
   private isColliding(entity1: IGameEntity, entity2: IGameEntity) {
-    const entity1Bounds = entity1.view.getBounds().rectangle;
-    const entity2Bounds = entity2.view.getBounds().rectangle;
+    if (!entity1?.view || !entity2?.view) {
+      return false;
+    }
 
-    return entity1Bounds.intersects(entity2Bounds);
+    const entity1Bounds = entity1.view.getBounds()?.rectangle;
+    const entity2Bounds = entity2.view.getBounds()?.rectangle;
+
+    if (entity1Bounds && entity2Bounds) {
+      return entity2Bounds.intersects(entity1Bounds);
+    }
+
+    return false;
   }
 
   checkCollisionBetweenEntities(
     entities1: Map<number, IGameEntity> | null,
     entities2: Map<number, IGameEntity> | null,
-    callback: (entity1: IGameEntity, entity2: IGameEntity) => void,
+    callback: (entity1: IGameEntity, entity2: IGameEntity) => void
   ) {
     if (!(entities1 && entities1.size > 0 && entities2 && entities2.size > 0)) {
       return false;
@@ -63,25 +72,46 @@ export class CollisionManager {
 
   resolveCollisionCannonBall(
     cannonEntity: IGameEntity,
-    ballEntity: IGameEntity,
+    ballEntity: IGameEntity
   ) {
     console.log("game over");
-    this.entityManager.removeEntity(cannonEntity);
+    // this.entityManager.removeEntity(cannonEntity);
     this.entityManager.removeEntity(ballEntity);
   }
 
   resolveCollisionProjectileBall(
-    projectileEntity: IGameEntity,
     ballEntity: IGameEntity,
+    projectileEntity: IGameEntity
   ) {
     this.entityManager.removeEntity(projectileEntity);
 
     console.log(ballEntity);
-    this.entityManager.removeEntity(ballEntity);
+    if (ballEntity.type === ENTITY_BALL) {
+      const ball = ballEntity as Ball;
+      const ballHealth = ball.health % 2 === 0 ? ball.health / 2 : 0;
+      if (ballHealth !== 0) {
+        this.entityManager.addEntity(
+          new Ball({
+            position: { x: ball.view.x, y: ball.view.y },
+            health: ballHealth,
+            velocity: { x: -5, y: 5 },
+          })
+        );
+        this.entityManager.addEntity(
+          new Ball({
+            position: { x: ball.view.x, y: ball.view.y },
+            health: ballHealth,
+            velocity: { x: 5, y: 5 },
+          })
+        );
+      }
+
+      this.entityManager.removeEntity(ballEntity);
+    }
   }
 
   checkProjectileOffScreen(
-    projectileEntities: Map<number, IGameEntity> | null,
+    projectileEntities: Map<number, IGameEntity> | null
   ) {
     if (!projectileEntities?.size) {
       return;
