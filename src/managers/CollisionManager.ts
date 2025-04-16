@@ -1,17 +1,21 @@
 import { Ball } from "../entities/Ball";
 import {
+  BALL_SPEED,
   ENTITY_BALL,
   ENTITY_CANNON,
   ENTITY_PROJECTILE,
 } from "../utils/constants";
 import { IGameEntity } from "../utils/types";
 import { EntityManager } from "./EntityManager";
+import { StatsManager } from "./StatsManager";
 
 export class CollisionManager {
   entityManager: EntityManager;
+  statsManager: StatsManager;
 
-  constructor(entityManager: EntityManager) {
+  constructor(entityManager: EntityManager, statsManager: StatsManager) {
     this.entityManager = entityManager;
+    this.statsManager = statsManager;
   }
 
   checkCollisions() {
@@ -74,18 +78,21 @@ export class CollisionManager {
     cannonEntity: IGameEntity,
     ballEntity: IGameEntity
   ) {
-    console.log("game over");
-    // this.entityManager.removeEntity(cannonEntity);
-    this.entityManager.removeEntity(ballEntity);
+    this.statsManager.removeLife();
+
+    if (this.statsManager.isGameOver()) {
+      this.entityManager.removeEntity(cannonEntity);
+      console.log("game over");
+    }
   }
 
   resolveCollisionProjectileBall(
     ballEntity: IGameEntity,
     projectileEntity: IGameEntity
   ) {
+    this.statsManager.addScore(1);
     this.entityManager.removeEntity(projectileEntity);
 
-    console.log(ballEntity);
     if (ballEntity.type === ENTITY_BALL) {
       const ball = ballEntity as Ball;
       const ballHealth = ball.health % 2 === 0 ? ball.health / 2 : 0;
@@ -94,14 +101,14 @@ export class CollisionManager {
           new Ball({
             position: { x: ball.view.x, y: ball.view.y },
             health: ballHealth,
-            velocity: { x: -5, y: 5 },
+            velocity: { x: -BALL_SPEED * (BALL_SPEED / ball.health), y: 5 },
           })
         );
         this.entityManager.addEntity(
           new Ball({
             position: { x: ball.view.x, y: ball.view.y },
             health: ballHealth,
-            velocity: { x: 5, y: 5 },
+            velocity: { x: BALL_SPEED * (BALL_SPEED / ball.health), y: 5 },
           })
         );
       }

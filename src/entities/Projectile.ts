@@ -1,11 +1,11 @@
 import { Graphics } from "pixi.js";
 import { IGameEntity } from "../utils/types";
-import { ENTITY_PROJECTILE } from "../utils/constants";
+import { ENTITY_PROJECTILE, PROJECTILE_SPEED } from "../utils/constants";
 
 export class Projectile implements IGameEntity {
   view: Graphics;
   velocity: { x: number; y: number };
-  speed: number = 3.5;
+  speed: number = PROJECTILE_SPEED;
   type = ENTITY_PROJECTILE;
 
   constructor(startX: number, startY: number) {

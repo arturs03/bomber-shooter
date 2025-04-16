@@ -9,3 +9,6 @@ export const ENTITY_TYPES = [
   ENTITY_BALL,
   ENTITY_PROJECTILE,
 ] as const;
+
+export const BALL_SPEED = 5;
+export const PROJECTILE_SPEED = 4;

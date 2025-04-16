@@ -13,12 +13,11 @@ export class Ball implements IGameEntity {
 
   constructor(params: IBallParams) {
     this.view = new Container();
-
-    const graphics = new Graphics();
-    graphics.circle(0, 0, 20).fill({ color: "yellow" });
-
     this.health = params.health;
-
+    this.velocity = params.velocity;
+    this.view.x = params.position.x;
+    this.view.y = params.position.y;
+    
     const text = new Text({
       text: this.health.toString(),
       style: {
@@ -27,12 +26,11 @@ export class Ball implements IGameEntity {
       },
     });
     text.anchor.set(0.5, 0.5);
+
+    const graphics = new Graphics();
+    graphics.circle(0, 0, Math.max(10, 10 * this.health)).fill({ color: "yellow" });
+
     this.view.addChild(graphics, text);
-
-    this.velocity = params.velocity;
-
-    this.view.x = params.position.x;
-    this.view.y = params.position.y;
   }
 
   update(deltaTime: number) {
