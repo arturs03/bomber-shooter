@@ -12,6 +12,8 @@ import { StatsManager } from "./StatsManager";
 export class CollisionManager {
   entityManager: EntityManager;
   statsManager: StatsManager;
+  lastTimePlayerHit: number = 0;
+  playerHitCooldown: number = 1000;
 
   constructor(entityManager: EntityManager, statsManager: StatsManager) {
     this.entityManager = entityManager;
@@ -28,16 +30,19 @@ export class CollisionManager {
 
     this.checkProjectileOffScreen(projectileEntities);
 
-    this.checkCollisionBetweenEntities(
-      cannonEntities,
-      ballEntities,
-      this.resolveCollisionCannonBall.bind(this)
-    );
+    const currentTime = Date.now();
+    if (currentTime - this.lastTimePlayerHit > this.playerHitCooldown) {
+      this.checkCollisionBetweenEntities(
+        cannonEntities,
+        ballEntities,
+        this.resolveCollisionCannonBall.bind(this),
+      );
+    }
 
     this.checkCollisionBetweenEntities(
       ballEntities,
       projectileEntities,
-      this.resolveCollisionProjectileBall.bind(this)
+      this.resolveCollisionProjectileBall.bind(this),
     );
   }
 
@@ -59,7 +64,7 @@ export class CollisionManager {
   checkCollisionBetweenEntities(
     entities1: Map<number, IGameEntity> | null,
     entities2: Map<number, IGameEntity> | null,
-    callback: (entity1: IGameEntity, entity2: IGameEntity) => void
+    callback: (entity1: IGameEntity, entity2: IGameEntity) => void,
   ) {
     if (!(entities1 && entities1.size > 0 && entities2 && entities2.size > 0)) {
       return false;
@@ -74,21 +79,18 @@ export class CollisionManager {
     }
   }
 
-  resolveCollisionCannonBall(
-    cannonEntity: IGameEntity,
-    ballEntity: IGameEntity
-  ) {
+  resolveCollisionCannonBall(cannonEntity: IGameEntity) {
     this.statsManager.removeLife();
+    this.lastTimePlayerHit = Date.now();
 
     if (this.statsManager.isGameOver()) {
       this.entityManager.removeEntity(cannonEntity);
-      console.log("game over");
     }
   }
 
   resolveCollisionProjectileBall(
     ballEntity: IGameEntity,
-    projectileEntity: IGameEntity
+    projectileEntity: IGameEntity,
   ) {
     this.statsManager.addScore(1);
     this.entityManager.removeEntity(projectileEntity);
@@ -102,14 +104,14 @@ export class CollisionManager {
             position: { x: ball.view.x, y: ball.view.y },
             health: ballHealth,
             velocity: { x: -BALL_SPEED * (BALL_SPEED / ball.health), y: 5 },
-          })
+          }),
         );
         this.entityManager.addEntity(
           new Ball({
             position: { x: ball.view.x, y: ball.view.y },
             health: ballHealth,
             velocity: { x: BALL_SPEED * (BALL_SPEED / ball.health), y: 5 },
-          })
+          }),
         );
       }
 
@@ -118,7 +120,7 @@ export class CollisionManager {
   }
 
   checkProjectileOffScreen(
-    projectileEntities: Map<number, IGameEntity> | null
+    projectileEntities: Map<number, IGameEntity> | null,
   ) {
     if (!projectileEntities?.size) {
       return;

@@ -17,7 +17,7 @@ export class Ball implements IGameEntity {
     this.velocity = params.velocity;
     this.view.x = params.position.x;
     this.view.y = params.position.y;
-    
+
     const text = new Text({
       text: this.health.toString(),
       style: {
@@ -28,7 +28,9 @@ export class Ball implements IGameEntity {
     text.anchor.set(0.5, 0.5);
 
     const graphics = new Graphics();
-    graphics.circle(0, 0, Math.max(10, 10 * this.health)).fill({ color: "yellow" });
+    graphics
+      .circle(0, 0, Math.max(10, 10 * this.health))
+      .fill({ color: "yellow" });
 
     this.view.addChild(graphics, text);
   }

@@ -32,7 +32,7 @@ async function init() {
       position: { x: app.screen.width / 2, y: app.screen.height / 2 },
       health: 4,
       velocity: { x: 5, y: 5 },
-    })
+    }),
   );
 
   const scoreDisplay = new StatsDisplay(statsManager);

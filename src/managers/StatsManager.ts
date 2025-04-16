@@ -10,7 +10,7 @@ export class StatsManager extends EventEmitter {
 
   public addScore(score: number) {
     this._score += score;
-    this.emit('scoreUpdated', this._score);
+    this.emit("scoreUpdated", this._score);
   }
 
   public get score(): number {
@@ -23,9 +23,9 @@ export class StatsManager extends EventEmitter {
 
   public removeLife() {
     this._lives--;
-    this.emit('livesUpdated', this._lives);
+    this.emit("livesUpdated", this._lives);
     if (this.isGameOver()) {
-      this.emit('gameOver');
+      this.emit("gameOver");
     }
   }
 

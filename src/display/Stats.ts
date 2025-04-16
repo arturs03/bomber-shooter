@@ -46,7 +46,7 @@ export class StatsDisplay {
     });
     gameOverText.position.set(
       app.screen.width / 2 - gameOverText.width / 2,
-      app.screen.height / 2
+      app.screen.height / 2,
     );
     this.view.addChild(gameOverText);
   };
